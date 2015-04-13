@@ -185,7 +185,7 @@ public class TaskExecutor extends Thread{
 		String fangshi = getDataBySelector(page , "fangshi");
 		hr.fangshi = TaskHelper.getFangshiText(fangshi);
 		String lxr = getDataBySelector(page , "lxr");
-		hr.lxr = lxr;
+		hr.lxr = lxr.replace("个人", "");
 		String lceng = getDataBySelector(page , "lceng");
 		hr.lceng = TaskHelper.getLcengFromText(lceng);
 		
@@ -340,7 +340,7 @@ public class TaskExecutor extends Thread{
 		}
 		
 		String lxr = getDataBySelector(page , "lxr");
-		house.lxr = lxr.replace("联系人： ", "");
+		house.lxr = lxr.replace("联系人： ", "").replace("个人", "");
 		
 		String tel = getDataBySelector(page , "tel");
 		page.select("#t_phone");

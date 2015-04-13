@@ -230,8 +230,10 @@ public class TaskHelper {
 			return "中装";
 		}else if(zxiu.contains("豪华装修")){
 			return "豪装";
+		}else if(zxiu.contains("毛坯")){
+			return "毛坯";
 		}else{
-			return zxiu.replace("装修情况：", "").replace("房", "");
+			return "";
 		}
 	}
 
@@ -273,9 +275,12 @@ public class TaskHelper {
 		if(StringUtils.isEmpty(text)){
 			return "无";
 		}
-		if(text.contains("限女性")){
+		if(text.contains("限女")){
 			return "限女性";
+		}else if(text.contains("限男")){
+			return "限男性";
+		}else{
+			return "男女不限";
 		}
-		return "男女不限";
 	}
 }

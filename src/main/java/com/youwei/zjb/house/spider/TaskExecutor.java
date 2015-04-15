@@ -101,10 +101,10 @@ public class TaskExecutor extends Thread{
 			}
 			String detailUrl = link.first().attr("href");
 			try {
+				processDetailPage(detailUrl);
 				if(task.interval>0){
 					Thread.sleep(task.interval*1000);
 				}
-				processDetailPage(detailUrl);
 				total++;
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | IOException e) {
 				task.status = KeyConstants.Task_Stop;

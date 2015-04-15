@@ -34,7 +34,7 @@ public class TaskScheduler extends Thread{
 				ex.printStackTrace();
 			}
 			try {
-				Thread.sleep(60*1000);
+				Thread.sleep(60*1000*3);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

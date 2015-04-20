@@ -172,7 +172,7 @@ public class TaskExecutor extends Thread{
 		String area = getDataBySelector(page , "area");
 		hr.area = TaskHelper.getAreaFromText(area);
 		String address = getDataBySelector(page , "address");
-		hr.address = address.replace("地址：", "").replace("()", "");
+		hr.address = address.replace("地址：", "").replace("()", "").replace(String.valueOf((char)160), "").replace("»", "");
 		
 		String dateyear = getDataBySelector(page , "dateyear");
 		hr.dateyear = String.valueOf(TaskHelper.getYearFromText(dateyear));
@@ -280,7 +280,12 @@ public class TaskExecutor extends Thread{
 		house.href = detailUrl;
 		
 		String area = getDataBySelector(page , "area");
-		house.area = TaskHelper.getAreaFromText(area);
+		if(area.contains("地址:")){
+			area = area.split(String.valueOf((char)160))[1].replace("-", "");
+		}else{
+			area = TaskHelper.getAreaFromText(area).replace("地址:", "");
+		}
+		house.area = area;
 		if(StringUtils.isEmpty(house.area.trim())){
 			System.out.println(detailUrl);
 		}
@@ -289,7 +294,9 @@ public class TaskExecutor extends Thread{
 		String quyu = getDataBySelector(page , "quyu");
 		quyu = quyu.replace("位置：", "").replace("()", "").trim();
 		if(StringUtils.isNotEmpty(quyu)){
-			if(quyu.length()>2){
+			if(quyu.contains("地址:")){
+				quyu = quyu.replace("地址:", "").split(String.valueOf((char)160))[0];
+			}else	if(quyu.length()>2){
 				quyu = quyu.replace("区", "").replace("域：", "");
 				quyu = quyu.replace("县", "").replace("域：", "");
 			}
@@ -297,7 +304,12 @@ public class TaskExecutor extends Thread{
 		house.quyu = quyu;
 		
 		String address = getDataBySelector(page , "address");
-		house.address = address.replace("地址：", "").replace("()", "");
+		if(address.contains("地址:")){
+			address = address.split(String.valueOf((char)160))[2].replace("-", "");
+		}else{
+			address = address.replace("地址：", "").replace("()", "");
+		}
+		house.address = address;
 		
 		String lceng = getDataBySelector(page , "lceng");
 		house.lceng = TaskHelper.getLcengFromText(lceng);

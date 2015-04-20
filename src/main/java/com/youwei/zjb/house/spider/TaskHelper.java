@@ -151,7 +151,7 @@ public class TaskHelper {
 			return 0f;
 		}
 		String tmp = "";
-		text = text.replace(" ㎡", "㎡").replace(String.valueOf((char)160),"");
+		text = text.replace(" ㎡", "㎡").replace(" m²", "㎡").replace(String.valueOf((char)160),"");
 		text  = text.replace("　", " ").replace("面积：", "").replace("平米", "㎡");
 		text = text.replace("产证", "").replace("平方米", "").trim();
 		text = text.split("（")[0];
@@ -253,13 +253,13 @@ public class TaskHelper {
 			return "";
 		}
 		zxiu = zxiu.replace("房源概况", "");
-		if(zxiu.contains("简单装修") || zxiu.contains("简易装修")){
+		if(zxiu.contains("简单装修") || zxiu.contains("简易装修")||zxiu.contains("简装")){
 			return "简装";
-		}else if(zxiu.contains("精装修") || zxiu.contains("高档装修")){
+		}else if(zxiu.contains("精装修")||zxiu.contains("精装") || zxiu.contains("高档装修")){
 			return "精装";
-		}else if(zxiu.contains("中等装修") || zxiu.contains("中档装修")){
+		}else if(zxiu.contains("中等装修")||zxiu.contains("中装") || zxiu.contains("中档装修")){
 			return "中装";
-		}else if(zxiu.contains("豪华装修")){
+		}else if(zxiu.contains("豪华装修")||zxiu.contains("豪装")){
 			return "豪装";
 		}else if(zxiu.contains("毛坯")){
 			return "毛坯";

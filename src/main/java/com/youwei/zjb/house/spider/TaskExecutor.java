@@ -151,7 +151,7 @@ public class TaskExecutor extends Thread{
 		if(po!=null){
 			return;
 		}
-		String pageHtml = PullDataHelper.getHttpData(detailUrl, "", "utf8");
+		String pageHtml = PullDataHelper.getHttpData(detailUrl, "", task.encoding);
 		if(pageHtml.contains("页面可能被删除")){
 			return;
 		}
@@ -172,7 +172,7 @@ public class TaskExecutor extends Thread{
 		String area = getDataBySelector(page , "area");
 		hr.area = TaskHelper.getAreaFromText(area);
 		String address = getDataBySelector(page , "address");
-		hr.address = address;
+		hr.address = address.replace("地址：", "").replace("()", "");
 		
 		String dateyear = getDataBySelector(page , "dateyear");
 		hr.dateyear = String.valueOf(TaskHelper.getYearFromText(dateyear));
@@ -186,7 +186,7 @@ public class TaskExecutor extends Thread{
 		String fangshi = getDataBySelector(page , "fangshi");
 		hr.fangshi = TaskHelper.getFangshiText(fangshi);
 		String lxr = getDataBySelector(page , "lxr");
-		hr.lxr = lxr.replace("个人", "");
+		hr.lxr = lxr.replace("个人", "").replace("姓名： ", "");
 		String lceng = getDataBySelector(page , "lceng");
 		hr.lceng = TaskHelper.getLcengFromText(lceng);
 		
@@ -210,6 +210,7 @@ public class TaskExecutor extends Thread{
 		hr.mji = TaskHelper.getMjiFromText(mji);
 		
 		String quyu = getDataBySelector(page , "quyu");
+		quyu = quyu.replace("区域：", "");
 		if(StringUtils.isNotEmpty(quyu)){
 			if(quyu.length()>2){
 				quyu = quyu.replace("区", "");
@@ -234,13 +235,14 @@ public class TaskExecutor extends Thread{
 		hr.isdel = 0;
 		
 		String tel = getDataBySelector(page , "tel");
+		page.select("td:containsOwn(出租租金：)");
 		tel = TaskHelper.getTelFromText(tel);
 		if(tel.contains("img")){
 			hr.telImg = task.detailPageUrlPrefix+tel;
 		}else if(tel.contains("image")){
 			hr.telImg = tel;
 		}else{
-			hr.tel = tel.replace(" ", "");
+			hr.tel = tel.replace(" ", "").replace("移动电话：", "");
 		}
 		String pubtime = getDataBySelector(page , "pubtime");
 		hr.dateadd = TaskHelper.getPubtimeFromText(pubtime);
@@ -285,6 +287,7 @@ public class TaskExecutor extends Thread{
 //		page.select("li:contains(小区)").first().ownText()
 //		page.select("span:containsOwn(地区) :first-child")
 		String quyu = getDataBySelector(page , "quyu");
+		quyu = quyu.replace("位置：", "").replace("()", "").trim();
 		if(StringUtils.isNotEmpty(quyu)){
 			if(quyu.length()>2){
 				quyu = quyu.replace("区", "").replace("域：", "");
@@ -294,7 +297,7 @@ public class TaskExecutor extends Thread{
 		house.quyu = quyu;
 		
 		String address = getDataBySelector(page , "address");
-		house.address = address.replace("地址：", "");
+		house.address = address.replace("地址：", "").replace("()", "");
 		
 		String lceng = getDataBySelector(page , "lceng");
 		house.lceng = TaskHelper.getLcengFromText(lceng);
@@ -318,7 +321,6 @@ public class TaskExecutor extends Thread{
 		
 		String mji = getDataBySelector(page , "mji");
 		house.mji = TaskHelper.getMjiFromText(mji);
-		
 		String zjia = getDataBySelector(page , "zjia");
 		zjia = TaskHelper.getZjiaFromText(zjia);
 		//价格：48万元
@@ -341,7 +343,7 @@ public class TaskExecutor extends Thread{
 		}
 		
 		String lxr = getDataBySelector(page , "lxr");
-		house.lxr = lxr.replace("联系人： ", "").replace("个人", "");
+		house.lxr = lxr.replace("联系人： ", "").replace("个人", "").replace("姓名： ", "");
 		
 		String tel = getDataBySelector(page , "tel");
 		page.select("#t_phone");
@@ -352,7 +354,7 @@ public class TaskExecutor extends Thread{
 			house.telImg = TaskHelper.getTelFromText(tel).replace("/..", task.detailPageUrlPrefix);
 		}else{
 			if(whao.isEmpty()){
-				house.tel = tel.replace(" ", "");
+				house.tel = tel.replace(" ", "").replace("移动电话：", "");
 			}else {
 				String weihao = whao.first().attr("data-contact");
 				house.tel = tel.replace("*", "")+weihao;

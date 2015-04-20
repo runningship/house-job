@@ -3,6 +3,8 @@ package com.youwei.zjb.house.spider;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
@@ -77,6 +79,17 @@ public class TaskHelper {
 	}
 	
 	public static int getLcengFromText(String text){
+		Matcher match = Pattern.compile("第[0-9]*层").matcher(text);
+		if(match.find()){
+			String tmp = match.group();
+			tmp = tmp.replace("第", "").replace("层", "");
+			try{
+				return Integer.valueOf(tmp);
+			}catch(Exception ex){
+				//暂不处理
+				return 0;
+			}
+		}
 		text = text.replace("楼层：", "").replace("楼", "").replace("层", "").trim().replace(" ", "/");
 		if(StringUtils.isEmpty(text)){
 			return 0;
@@ -90,6 +103,17 @@ public class TaskHelper {
 		}
 	}
 	public static int getZcengFromText(String text){
+		Matcher match = Pattern.compile("[总]?[共]?[0-9]*层").matcher(text);
+		if(match.find()){
+			String tmp =match.group();
+			tmp = tmp.replace("共", "").replace("总", "").replace("层", "");
+			try{
+				return Integer.valueOf(tmp);
+			}catch(Exception ex){
+				//暂不处理
+				return 0;
+			}
+		}
 		text = text.replace("楼", "").replace("共", "").replace("层", "").trim().replace(" ", "/");
 		try{
 			String[] lcen = text.split("/");
@@ -129,7 +153,13 @@ public class TaskHelper {
 		String tmp = "";
 		text = text.replace(" ㎡", "㎡").replace(String.valueOf((char)160),"");
 		text  = text.replace("　", " ").replace("面积：", "").replace("平米", "㎡");
+		text = text.replace("产证", "").replace("平方米", "").trim();
 		text = text.split("（")[0];
+		try{
+			return Float.parseFloat(text);
+		}catch(Exception ex){
+		}
+		
 		for(String str : text.split(" ")){
 			if(str.contains("㎡") && !str.contains("（")){
 				tmp =  str.split("㎡")[0].trim();
@@ -179,6 +209,7 @@ public class TaskHelper {
 		text = text.replace("):", "");
 		text = text.replace(")", "");
 		text = text.replace("(单间出租)", "");
+		text = text.replace("小区名称：", "");
 		text = text.replace("-", "").trim();
 		text = text.split("\\(")[0].trim();
 		return text.split(" ")[0];
@@ -222,11 +253,11 @@ public class TaskHelper {
 			return "";
 		}
 		zxiu = zxiu.replace("房源概况", "");
-		if(zxiu.contains("简单装修")){
+		if(zxiu.contains("简单装修") || zxiu.contains("简易装修")){
 			return "简装";
-		}else if(zxiu.contains("精装修")){
+		}else if(zxiu.contains("精装修") || zxiu.contains("高档装修")){
 			return "精装";
-		}else if(zxiu.contains("中等装修")){
+		}else if(zxiu.contains("中等装修") || zxiu.contains("中档装修")){
 			return "中装";
 		}else if(zxiu.contains("豪华装修")){
 			return "豪装";
@@ -238,6 +269,8 @@ public class TaskHelper {
 	}
 
 	public static Float getZujinText(String zujin) {
+		zujin = zujin.replace(String.valueOf((char)12288), "");
+		zujin = zujin.replace("元/月","").trim();
 		try{
 			return Float.valueOf(zujin);
 		}catch(Exception ex){

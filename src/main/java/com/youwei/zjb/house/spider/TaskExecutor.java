@@ -84,6 +84,7 @@ public class TaskExecutor extends Thread{
 //		}
 		Document page = Jsoup.parse(pageHtml);
 		Elements dataList = page.select(task.listSelector);
+//		System.out.println(pageHtml);
 		if(dataList.isEmpty()){
 			task.status = KeyConstants.Task_Stop;
 			task.lastError = "列表没有找到数据,listSelector="+task.listSelector;
@@ -347,6 +348,8 @@ public class TaskExecutor extends Thread{
 		Elements whao = page.select(".show-contact");
 		if(tel.contains("http:")){
 			house.telImg = TaskHelper.getTelFromText(tel);
+		}else if(tel.contains("<img")){
+			house.telImg = TaskHelper.getTelFromText(tel).replace("/..", task.detailPageUrlPrefix);
 		}else{
 			if(whao.isEmpty()){
 				house.tel = tel.replace(" ", "");

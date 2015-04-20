@@ -127,12 +127,12 @@ public class TaskHelper {
 			return 0f;
 		}
 		String tmp = "";
-		text = text.replace(" ㎡", "㎡");
+		text = text.replace(" ㎡", "㎡").replace(String.valueOf((char)160),"");
 		text  = text.replace("　", " ").replace("面积：", "").replace("平米", "㎡");
 		text = text.split("（")[0];
 		for(String str : text.split(" ")){
 			if(str.contains("㎡") && !str.contains("（")){
-				tmp =  str.replace("㎡", "").trim();
+				tmp =  str.split("㎡")[0].trim();
 				break;
 			}
 		}

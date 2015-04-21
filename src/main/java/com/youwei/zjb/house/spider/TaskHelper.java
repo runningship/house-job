@@ -79,6 +79,7 @@ public class TaskHelper {
 	}
 	
 	public static int getLcengFromText(String text){
+		text = text.replace(" ", "");
 		Matcher match = Pattern.compile("第[0-9]*层").matcher(text);
 		if(match.find()){
 			String tmp = match.group();
@@ -103,6 +104,7 @@ public class TaskHelper {
 		}
 	}
 	public static int getZcengFromText(String text){
+		text = text.replace(" ", "");
 		Matcher match = Pattern.compile("[总]?[共]?[0-9]*层").matcher(text);
 		if(match.find()){
 			String tmp =match.group();

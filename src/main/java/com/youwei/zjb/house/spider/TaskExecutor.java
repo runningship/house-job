@@ -237,7 +237,9 @@ public class TaskExecutor extends Thread{
 		String tel = getDataBySelector(page , "tel");
 		page.select("td:containsOwn(出租租金：)");
 		tel = TaskHelper.getTelFromText(tel);
-		if(tel.contains("img")){
+		if(tel.contains("http")){
+			hr.telImg = tel;
+		}else if(tel.contains("img")){
 			hr.telImg = task.detailPageUrlPrefix+tel;
 		}else if(tel.contains("image")){
 			hr.telImg = tel;
@@ -418,6 +420,9 @@ public class TaskExecutor extends Thread{
 			}
 			if(StringUtils.isEmpty(text)){
 				text = elems.first().html();
+			}
+			if(StringUtils.isEmpty(text)){
+				text = elems.first().outerHtml();
 			}
 			//过滤点无用字符
 			if(!text.contains("src")){

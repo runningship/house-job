@@ -60,7 +60,7 @@ public class TaskExecutor extends Thread{
 		}
 		String pageHtml = null;
 		try {
-			pageHtml = PullDataHelper.getHttpData(task.siteUrl, "", "utf8");
+			pageHtml = PullDataHelper.getHttpData(task.siteUrl, "", task.encoding);
 		} catch (IOException e) {
 			task.status = KeyConstants.Task_Stop;
 			task.lastError = "访问"+task.siteUrl+"失败";

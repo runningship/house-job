@@ -345,7 +345,7 @@ public class TaskExecutor extends Thread{
 				house.zjia = Float.valueOf(zjia);
 			}
 		}catch(Exception ex){
-			LogUtil.log(Level.INFO, "获取价格失败,href="+detailUrl, ex);
+			LogUtil.log(Level.INFO, "获取价格失败,href="+detailUrl+"zjia="+zjia, ex);
 		}
 		
 		

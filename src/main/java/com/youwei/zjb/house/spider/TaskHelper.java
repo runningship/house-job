@@ -7,8 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Level;
+import org.bc.sdak.utils.LogUtil;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 public class TaskHelper {
 
@@ -247,7 +248,10 @@ public class TaskHelper {
 		if(zjia.contains("急售")){
 			return "";
 		}
-		return zjia.replace(",", "").replace("价格：", "").replace("万", "").replace("w", "").replace("W", "").replace("元", "").replace("左右", "");
+		String tmp = zjia.replace(",", "").replace("价格：", "").replace("万", "").replace("w", "").replace("W", "").replace("元", "").replace("左右", "");
+		tmp = tmp.replace("/平方米", "").replace("一平方", "");
+		tmp = tmp.replace(String.valueOf((char)8195), "");
+		return tmp;
 	}
 
 	public static String getZxiuFromText(String zxiu) {
@@ -276,6 +280,7 @@ public class TaskHelper {
 		try{
 			return Float.valueOf(zujin);
 		}catch(Exception ex){
+			LogUtil.log(Level.INFO, "获取价格失败,zujin="+zujin, ex);
 			return 0f;
 		}
 	}

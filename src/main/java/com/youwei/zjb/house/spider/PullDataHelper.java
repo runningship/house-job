@@ -31,7 +31,7 @@ public class PullDataHelper {
 		conn.setUseCaches(false);
 		conn.setConnectTimeout(10000);
 		conn.setReadTimeout(10000);
-		conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+		conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; CIBA)");
 		String result = IOUtils.toString(conn.getInputStream(),encode);
 		
 		//获取cookie  

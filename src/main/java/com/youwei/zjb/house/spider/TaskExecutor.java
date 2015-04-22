@@ -419,6 +419,7 @@ public class TaskExecutor extends Thread{
 				text = elems.first().text();
 			}
 			if(StringUtils.isEmpty(text)){
+				if(elems.first().outerHtml().contains("img"))
 				text = elems.first().html();
 			}
 			if(StringUtils.isEmpty(text)){

@@ -92,7 +92,7 @@ public class TaskHelper {
 				return 0;
 			}
 		}
-		text = text.replace("楼层：", "").replace("楼", "").replace("层", "").trim().replace(" ", "/");
+		text = text.replace("楼层：", "").replace("总高", "").replace("楼", "").replace("层", "").trim().replace(" ", "/").replace("，", "/");
 		if(StringUtils.isEmpty(text)){
 			return 0;
 		}
@@ -105,11 +105,11 @@ public class TaskHelper {
 		}
 	}
 	public static int getZcengFromText(String text){
-		text = text.replace(" ", "").replace(String.valueOf((char)160),"");
-		Matcher match = Pattern.compile("[总]?[共]?[0-9]*层").matcher(text);
+		text = text.replace(" ", "").replace(String.valueOf((char)160),"").replace("楼层：", "");
+		Matcher match = Pattern.compile("[总]?[共]?[总高]?[0-9]*层").matcher(text);
 		if(match.find()){
 			String tmp =match.group();
-			tmp = tmp.replace("共", "").replace("总", "").replace("层", "");
+			tmp = tmp.replace("共", "").replace("总高", "").replace("总", "").replace("层", "");
 			try{
 				return Integer.valueOf(tmp);
 			}catch(Exception ex){
@@ -117,7 +117,7 @@ public class TaskHelper {
 				return 0;
 			}
 		}
-		text = text.replace("楼", "").replace("共", "").replace("层", "").trim().replace(" ", "/");
+		text = text.replace("楼层：", "").replace("楼", "").replace("层", "").trim().replace(" ", "/").replace("，", "/");
 		try{
 			String[] lcen = text.split("/");
 			int i = lcen.length-1;

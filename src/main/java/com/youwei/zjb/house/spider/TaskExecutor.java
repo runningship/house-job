@@ -422,6 +422,7 @@ public class TaskExecutor extends Thread{
 				text = elems.first().html();
 			}
 			if(StringUtils.isEmpty(text)){
+				if(elems.first().outerHtml().contains("img"))
 				text = elems.first().outerHtml();
 			}
 			//过滤点无用字符

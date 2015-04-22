@@ -80,7 +80,7 @@ public class TaskHelper {
 	}
 	
 	public static int getLcengFromText(String text){
-		text = text.replace(" ", "");
+		text = text.replace(" ", "").replace(String.valueOf((char)160),"");
 		Matcher match = Pattern.compile("第[0-9]*层").matcher(text);
 		if(match.find()){
 			String tmp = match.group();
@@ -105,7 +105,7 @@ public class TaskHelper {
 		}
 	}
 	public static int getZcengFromText(String text){
-		text = text.replace(" ", "");
+		text = text.replace(" ", "").replace(String.valueOf((char)160),"");
 		Matcher match = Pattern.compile("[总]?[共]?[0-9]*层").matcher(text);
 		if(match.find()){
 			String tmp =match.group();
@@ -276,7 +276,7 @@ public class TaskHelper {
 
 	public static Float getZujinText(String zujin) {
 		zujin = zujin.replace(String.valueOf((char)12288), "");
-		zujin = zujin.replace("元/月","").trim();
+		zujin = zujin.replace("元/月","").replace("元", "").trim();
 		try{
 			return Float.valueOf(zujin);
 		}catch(Exception ex){

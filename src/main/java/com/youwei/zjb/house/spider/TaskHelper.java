@@ -135,7 +135,7 @@ public class TaskHelper {
 	public static int getYearFromText(String text){
 		String tmp = "";
 		if(text.contains("年")){
-			tmp =  text.replace("年", "").trim();
+			tmp =  text.replace("年代：", "").replace("年", "").trim();
 		}else{
 			tmp = text;
 		}

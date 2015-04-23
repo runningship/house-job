@@ -419,12 +419,14 @@ public class TaskExecutor extends Thread{
 				text = elems.first().text();
 			}
 			if(StringUtils.isEmpty(text)){
-				if(elems.first().outerHtml().contains("img"))
-				text = elems.first().html();
+				if(elems.first().html().contains("img")){
+					text = elems.first().html();
+				}
 			}
 			if(StringUtils.isEmpty(text)){
-				if(elems.first().outerHtml().contains("img"))
-				text = elems.first().outerHtml();
+				if(elems.first().outerHtml().contains("img")){
+					text = elems.first().outerHtml();
+				}
 			}
 			//过滤点无用字符
 			if(!text.contains("src")){

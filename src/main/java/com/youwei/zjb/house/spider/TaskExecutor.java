@@ -208,15 +208,20 @@ public class TaskExecutor extends Thread{
 		
 		String mji = getDataBySelector(page , "mji");
 		hr.mji = TaskHelper.getMjiFromText(mji);
-		
-		String quyu = getDataBySelector(page , "quyu");
-		quyu = quyu.replace("区域：", "");
-		if(StringUtils.isNotEmpty(quyu)){
-			if(quyu.length()>2){
-				quyu = quyu.replace("区", "");
-				quyu = quyu.replace("县", "");
+		String quyu = "";
+		if(task.quyu.startsWith("@")){
+				quyu = task.quyu.replace("@", "");
+		}else{
+			quyu = getDataBySelector(page , "quyu");
+			quyu = quyu.replace("区域：", "");
+			if(StringUtils.isNotEmpty(quyu)){
+				if(quyu.length()>2){
+					quyu = quyu.replace("区", "");
+					quyu = quyu.replace("县", "");
+				}
 			}
 		}
+		
 		hr.site = task.site;
 		hr.quyu = quyu;
 		hr.seeFH = 1;
@@ -293,14 +298,19 @@ public class TaskExecutor extends Thread{
 		}
 //		page.select("li:contains(小区)").first().ownText()
 //		page.select("span:containsOwn(地区) :first-child")
-		String quyu = getDataBySelector(page , "quyu");
-		quyu = quyu.replace("位置：", "").replace("()", "").trim();
-		if(StringUtils.isNotEmpty(quyu)){
-			if(quyu.contains("地址:")){
-				quyu = quyu.replace("地址:", "").split(String.valueOf((char)160))[0];
-			}else	if(quyu.length()>2){
-				quyu = quyu.replace("区", "").replace("域：", "");
-				quyu = quyu.replace("县", "").replace("域：", "");
+		String quyu = "";
+		if(task.quyu.startsWith("@")){
+				quyu = task.quyu.replace("@", "");
+		}else{
+			quyu = getDataBySelector(page , "quyu");
+			quyu = quyu.replace("位置：", "").replace("()", "").trim();
+			if(StringUtils.isNotEmpty(quyu)){
+				if(quyu.contains("地址:")){
+					quyu = quyu.replace("地址:", "").split(String.valueOf((char)160))[0];
+				}else	if(quyu.length()>2){
+					quyu = quyu.replace("区", "").replace("域：", "");
+					quyu = quyu.replace("县", "").replace("域：", "");
+				}
 			}
 		}
 		house.quyu = quyu;

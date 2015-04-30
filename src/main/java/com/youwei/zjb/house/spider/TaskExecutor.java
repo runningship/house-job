@@ -112,7 +112,10 @@ public class TaskExecutor extends Thread{
 				task.lastError = e.getMessage() + ","+detailUrl;
 				LogUtil.log(Level.WARN, "任务运行失败，请检查程序", e);
 				return;
-			} catch(Exception ex){
+			} catch(DataInvalidException ex){
+				LogUtil.info(detailUrl+"信息不完整");
+				continue;
+			}catch(Exception ex){
 				//单挑数据失败，继续
 				task.lastError = ex.getMessage()+";"+detailUrl;
 				LogUtil.log(Level.WARN, "抓取数据失败:"+detailUrl, ex);
@@ -133,7 +136,7 @@ public class TaskExecutor extends Thread{
 		}
 		return false;
 	}
-	private void processDetailPage(String detailUrl) throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	private void processDetailPage(String detailUrl) throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, DataInvalidException {
 		ThreadSession.setCityPY(task.cityPy);
 		if(StringUtils.isNotEmpty(task.detailPageUrlPrefix)){
 			detailUrl = task.detailPageUrlPrefix+detailUrl;
@@ -146,7 +149,7 @@ public class TaskExecutor extends Thread{
 		
 	}
 
-	private void prcessChuzu(String detailUrl) throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	private void prcessChuzu(String detailUrl) throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, DataInvalidException {
 		HouseRent po = dao.getUniqueByKeyValue(HouseRent.class, "href", detailUrl);
 		if(po!=null){
 			return;
@@ -171,6 +174,9 @@ public class TaskExecutor extends Thread{
 		hr.href = detailUrl;
 		String area = getDataBySelector(page , "area");
 		hr.area = TaskHelper.getAreaFromText(area);
+		if(StringUtils.isEmpty(hr.area)){
+			throw new DataInvalidException("");
+		}
 		String address = getDataBySelector(page , "address");
 		hr.address = address.replace("地址：", "").replace("()", "").replace(String.valueOf((char)160), "").replace("»", "");
 		
@@ -258,7 +264,7 @@ public class TaskExecutor extends Thread{
 	}
 
 
-	private void prcessChushou(String detailUrl) throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	private void prcessChushou(String detailUrl) throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, DataInvalidException {
 		House po = dao.getUniqueByKeyValue(House.class, "href", detailUrl);
 		if(po!=null){
 			return;
@@ -287,6 +293,9 @@ public class TaskExecutor extends Thread{
 		house.href = detailUrl;
 		
 		String area = getDataBySelector(page , "area");
+		if(StringUtils.isEmpty(area)){
+			throw new DataInvalidException("");
+		}
 		if(area.contains("地址:")){
 			area = area.split(String.valueOf((char)160))[1].replace("-", "");
 		}else{

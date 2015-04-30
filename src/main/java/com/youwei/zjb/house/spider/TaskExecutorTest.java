@@ -1,7 +1,5 @@
 package com.youwei.zjb.house.spider;
 
-import java.util.regex.Pattern;
-
 import org.bc.sdak.SimpDaoTool;
 
 public class TaskExecutorTest {
@@ -12,7 +10,7 @@ public class TaskExecutorTest {
 //		Pattern.compile("第[0-9]*层").matcher("第15层").find();
 //		String tmp = Pattern.compile("第[0-9]*层").matcher("15层").appendTail(new StringBuffer());
 		StartUpListener.initDataSource();
-		Task task = SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 97);
+		Task task = SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 12);
 		System.out.println(task.name);
 		TaskExecutor te = new TaskExecutor(task);
 		te.execute();

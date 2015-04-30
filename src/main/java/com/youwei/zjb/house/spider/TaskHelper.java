@@ -275,6 +275,12 @@ public class TaskHelper {
 	}
 
 	public static Float getZujinText(String zujin) {
+		if(zujin.contains("面议")){
+			return 0f;
+		}
+		if(zujin.contains("急售")){
+			return 0f;
+		}
 		zujin = zujin.replace(String.valueOf((char)12288), "");
 		zujin = zujin.replace("元/月","").replace("元", "").trim();
 		try{

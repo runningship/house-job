@@ -107,7 +107,7 @@ public class TaskHelper {
 	public static int getZcengFromText(String text){
 		text = text.replace(" ", "").replace(String.valueOf((char)160),"").replace("楼层：", "");
 		Matcher match = Pattern.compile("[总]?[共]?[总高]?[0-9]*层").matcher(text);
-		if(match.find()){
+		if(match.find() && !text.contains("/")){
 			String tmp =match.group();
 			tmp = tmp.replace("共", "").replace("总高", "").replace("总", "").replace("层", "");
 			try{
@@ -224,8 +224,9 @@ public class TaskHelper {
 		String[] arr = script.split(" tmp =");
 		if(arr.length>1){
 			return arr[1];
+		}else{
+			return arr[0];
 		}
-		return "";
 	}
 	
 	public static Date getPubtimeFromText(String text){

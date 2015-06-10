@@ -111,7 +111,7 @@ public class TaskExecutor extends Thread{
 				task.status = KeyConstants.Task_Stop;
 				task.lastError = e.getMessage() + ","+detailUrl;
 				LogUtil.log(Level.WARN, "任务运行失败，请检查程序", e);
-				return;
+				continue;
 			} catch(DataInvalidException ex){
 				LogUtil.info(detailUrl+"信息不完整");
 				continue;

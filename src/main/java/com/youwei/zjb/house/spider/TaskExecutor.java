@@ -169,11 +169,7 @@ public class TaskExecutor extends Thread{
 		hr.did = 90;
 		hr.dhao = "";
 		hr.fhao="";
-		if("wuhu".equals(task.cityPy)){
-			hr.sh=0;
-		}else{
-			hr.sh=1;
-		}
+		hr.sh=1;
 		hr.ruku=1;
 		hr.href = detailUrl;
 		String area = getDataBySelector(page , "area");

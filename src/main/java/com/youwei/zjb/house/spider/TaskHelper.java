@@ -271,7 +271,7 @@ public class TaskHelper {
 		}else if(zxiu.contains("毛坯")){
 			return "毛坯";
 		}else{
-			return "";
+			return "毛坯";
 		}
 	}
 

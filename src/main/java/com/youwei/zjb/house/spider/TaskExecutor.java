@@ -324,6 +324,8 @@ public class TaskExecutor extends Thread{
 					quyu = quyu.replace("区", "").replace("域：", "");
 					quyu = quyu.replace("县", "").replace("域：", "");
 				}
+			}else{
+				quyu="其他";
 			}
 		}
 		house.quyu = quyu;

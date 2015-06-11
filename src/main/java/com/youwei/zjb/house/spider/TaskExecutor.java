@@ -443,6 +443,7 @@ public class TaskExecutor extends Thread{
 			if(StringUtils.isEmpty(text)){
 				text = elems.first().text();
 			}
+//			page.select(".peizhi span").first().html()
 			if(StringUtils.isEmpty(text)){
 				if(elems.first().html().contains("img")){
 					text = elems.first().html();
@@ -451,6 +452,11 @@ public class TaskExecutor extends Thread{
 			if(StringUtils.isEmpty(text)){
 				if(elems.first().outerHtml().contains("img")){
 					text = elems.first().outerHtml();
+				}
+			}
+			if(StringUtils.isEmpty(text)){
+				if(elems.first().html().contains("tmp = ")){
+					text = elems.first().html();
 				}
 			}
 			//过滤点无用字符

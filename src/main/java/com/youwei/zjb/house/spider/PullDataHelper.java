@@ -1,9 +1,10 @@
 package com.youwei.zjb.house.spider;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
@@ -12,8 +13,6 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.bc.sdak.SimpDaoTool;
 import org.bc.sdak.utils.LogUtil;
 import org.jsoup.nodes.Element;
 
@@ -32,7 +31,23 @@ public class PullDataHelper {
 		conn.setConnectTimeout(10000);
 		conn.setReadTimeout(10000);
 		conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; CIBA)");
-		String result = IOUtils.toString(conn.getInputStream(),encode);
+//		conn.setRequestProperty("Accept-Encoding", "gzip,deflate");
+		String contentEncoding = conn.getContentEncoding();
+		String result ="";
+		if("gzip".equals(contentEncoding)){
+			GZIPInputStream zipStream = new GZIPInputStream(conn.getInputStream());
+			BufferedReader reader = new BufferedReader(new InputStreamReader(zipStream,encode));
+			StringBuffer sb = new StringBuffer();
+            String line = "";  
+            while((line = reader.readLine()) != null) {  
+                sb.append(line).append("\n");
+            }
+            reader.close();
+            zipStream.close();
+            result = sb.toString();
+		}else{
+			result = IOUtils.toString(conn.getInputStream(),encode);
+		}
 		
 		//获取cookie  
 //        Map<String,List<String>> map=conn.getHeaderFields();

@@ -382,6 +382,11 @@ public class TaskExecutor extends Thread{
 		}
 		
 		String lxr = getDataBySelector(page , "lxr");
+		if(task.siteUrl.equals("http://www.aofenglu.com/esf/esftuijian1.asp")){
+			if(lxr.split("联系人：").length>1){
+				lxr = lxr.split("联系人：")[1].replace("）", "");
+			}
+		}
 		house.lxr = lxr.replace("联系人： ", "").replace("个人", "").replace("姓名： ", "");
 		
 		String tel = getDataBySelector(page , "tel");

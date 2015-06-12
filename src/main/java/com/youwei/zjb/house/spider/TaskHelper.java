@@ -26,7 +26,7 @@ public class TaskHelper {
 		nums.put("九", 9);
 	}
 	public static Integer getHxtFromText(String text){
-		text=text.replace(" ", "");
+		text=text.replace(" ", "").replace("两", "二");
 		int ting = text.indexOf("厅");
 		try{
 			if(ting>0){
@@ -44,7 +44,7 @@ public class TaskHelper {
 	}
 	
 	public static Integer getHxsFromText(String text){
-		text=text.replace(" ", "");
+		text=text.replace(" ", "").replace("两", "二");
 		int ting = text.indexOf("室");
 		try{
 			if(ting>0){
@@ -62,7 +62,7 @@ public class TaskHelper {
 	}
 	
 	public static Integer getHxwFromText(String text){
-		text=text.replace(" ", "");
+		text=text.replace(" ", "").replace("两", "二");
 		int ting = text.indexOf("卫");
 		try{
 			if(ting>0){
@@ -106,7 +106,7 @@ public class TaskHelper {
 	}
 	public static int getZcengFromText(String text){
 		text = text.replace(" ", "").replace(String.valueOf((char)160),"").replace("楼层：", "");
-		Matcher match = Pattern.compile("[总]?[共]?[总高]?[0-9]*层").matcher(text);
+		Matcher match = Pattern.compile("[总共高]+[0-9]*层").matcher(text);
 		if(match.find() && !text.contains("/")){
 			String tmp =match.group();
 			tmp = tmp.replace("共", "").replace("总高", "").replace("总", "").replace("层", "");

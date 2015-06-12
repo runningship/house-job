@@ -323,6 +323,7 @@ public class TaskExecutor extends Thread{
 				}else	if(quyu.length()>2){
 					quyu = quyu.replace("区", "").replace("域：", "");
 					quyu = quyu.replace("县", "").replace("域：", "");
+					quyu = quyu.replace("市", "").replace("域：", "");
 				}
 			}else{
 				quyu="其他";
@@ -387,7 +388,7 @@ public class TaskExecutor extends Thread{
 				lxr = lxr.split("联系人：")[1].replace("）", "");
 			}
 		}
-		house.lxr = lxr.replace("联系人： ", "").replace("个人", "").replace("姓名： ", "");
+		house.lxr = lxr.replace("联系人： ", "").replace("个人", "").replace("姓名： ", "").replace("联 系 人：", "");
 		
 		String tel = getDataBySelector(page , "tel");
 		page.select("#t_phone");

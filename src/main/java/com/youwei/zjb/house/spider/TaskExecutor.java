@@ -45,7 +45,7 @@ public class TaskExecutor extends Thread{
 		Task po = dao.get(Task.class, task.id);
 		po.lasttime  = new Date();
 		po.lastError = task.lastError;
-		po.status = KeyConstants.Task_Stop;
+//		po.status = KeyConstants.Task_Stop;
 		dao.saveOrUpdate(po);
 	}
 

@@ -7,6 +7,7 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.bc.sdak.CommonDaoService;
+import org.bc.sdak.SimpDaoTool;
 import org.bc.sdak.TransactionalServiceHelper;
 import org.bc.sdak.utils.BeanUtil;
 import org.bc.sdak.utils.LogUtil;
@@ -60,10 +61,15 @@ public class TaskExecutor extends Thread{
 		}
 		String pageHtml = null;
 		try {
-			pageHtml = PullDataHelper.getHttpData(task.siteUrl, "", task.encoding);
+			if(task.siteUrl.contains("58")){
+				pageHtml = PullDataHelper.getHttpData(task.siteUrl+"?"+new Date().getTime(), "", task.encoding);
+			}else{
+				pageHtml = PullDataHelper.getHttpData(task.siteUrl, "", task.encoding);
+			}
+			
 		} catch (IOException e) {
 			task.status = KeyConstants.Task_Stop;
-			task.lastError = "访问"+task.siteUrl+"失败";
+			task.lastError = "访问"+task.siteUrl+"失败 at "+new Date();
 			LogUtil.log(Level.WARN, "访问"+task.siteUrl+"失败", e);
 			return;
 		}
@@ -479,12 +485,9 @@ public class TaskExecutor extends Thread{
 	}
 	
 	public static void main(String[] args) throws Exception{
-//		StartUpListener.initDataSource();
-		Task task  = new Task();
-		task.cityPy = "bengbu";
+		StartUpListener.initDataSource();
+		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 11);
 		TaskExecutor te = new TaskExecutor(task);
-		task.area= "p:containsOwn(小区名称) :first-child";
-//		task.tel="#t_phone script";
-		te.processDetailPage("http://bengbu.58.com/ershoufang/21472816271009x.shtml");
+		te.processDetailPage("http://bengbu.baixing.com/ershoufang/a768899475.html?index=81");
 	}
 }

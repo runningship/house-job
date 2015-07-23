@@ -121,11 +121,11 @@ public class TaskHelper {
 		try{
 			String[] lcen = text.split("/");
 			int i = lcen.length-1;
-			if(i==0){
+			try{
+				return Integer.valueOf(lcen[i]);
+			}catch(Exception ex){
 				return 0;
 			}
-			String tmp = lcen[i];
-			return Integer.valueOf(tmp);
 		}catch(Exception ex){
 			//暂不处理
 			return 0;

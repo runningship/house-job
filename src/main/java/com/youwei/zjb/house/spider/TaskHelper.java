@@ -1,15 +1,20 @@
 package com.youwei.zjb.house.spider;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.bc.sdak.utils.LogUtil;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public class TaskHelper {
 
@@ -328,6 +333,33 @@ public class TaskHelper {
 			return "限男性";
 		}else{
 			return "男女不限";
+		}
+	}
+
+	public static void main(String[] args) throws IOException{
+		TaskHelper.getm58Tel(null,"http://hf.58.com/ershoufang/21");
+	}
+	public static String getm58Tel(Task task, String detailUrl){
+		try{
+			String[] arr = detailUrl.split("\\?");
+			arr = arr[0].split("\\/");
+			String houseId = arr[arr.length-1];
+			URL url = new URL("http://m.58.com/hf/ershoufang/"+houseId);
+			URLConnection conn = url.openConnection();
+			conn.addRequestProperty("User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
+			conn.setDefaultUseCaches(false);
+			conn.setUseCaches(false);
+			conn.setConnectTimeout(10000);
+			conn.setReadTimeout(10000);
+			String result = IOUtils.toString(conn.getInputStream(),"utf8");
+			System.out.println(result);
+			Document page = Jsoup.parse(result);
+			String href= page.getElementById("contact_phone").attr("href");
+			arr = href.split(":");
+			return arr[arr.length-1];
+		}catch(Exception ex){
+			LogUtil.log(Level.WARN, "试图从58手机版获取手机号码失败", ex);
+			return "";
 		}
 	}
 }

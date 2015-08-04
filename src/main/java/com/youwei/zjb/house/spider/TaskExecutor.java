@@ -396,23 +396,26 @@ public class TaskExecutor extends Thread{
 		}
 		house.lxr = lxr.replace("联系人： ", "").replace("个人", "").replace("姓名： ", "").replace("联 系 人：", "");
 		
-		String tel = getDataBySelector(page , "tel");
-		page.select("#t_phone");
-		Elements whao = page.select(".show-contact");
-		if(tel.contains("http:")){
-			house.telImg = TaskHelper.getTelFromText(tel);
-		}else if(tel.contains("<img")){
-			house.telImg = TaskHelper.getTelFromText(tel).replace("/..", task.detailPageUrlPrefix);
-		}else{
-			if(whao.isEmpty()){
-				house.tel = tel.replace(" ", "").replace("移动电话：", "");
-			}else {
-				String weihao = whao.first().attr("data-contact");
-				house.tel = tel.replace("*", "")+weihao;
-			}
-			
+		if("58".equals(house.site)){
+			house.tel = TaskHelper.getm58Tel(task, detailUrl);
 		}
-		
+		if(StringUtils.isEmpty(house.tel)){
+			String tel = getDataBySelector(page , "tel");
+			page.select("#t_phone");
+			Elements whao = page.select(".show-contact");
+			if(tel.contains("http:")){
+				house.telImg = TaskHelper.getTelFromText(tel);
+			}else if(tel.contains("<img")){
+				house.telImg = TaskHelper.getTelFromText(tel).replace("/..", task.detailPageUrlPrefix);
+			}else{
+				if(whao.isEmpty()){
+					house.tel = tel.replace(" ", "").replace("移动电话：", "");
+				}else {
+					String weihao = whao.first().attr("data-contact");
+					house.tel = tel.replace("*", "")+weihao;
+				}
+			}
+		}
 		
 		String dateyear = getDataBySelector(page , "dateyear");
 		house.dateyear = TaskHelper.getYearFromText(dateyear);

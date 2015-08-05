@@ -398,6 +398,7 @@ public class TaskExecutor extends Thread{
 		
 		if("58".equals(house.site)){
 			house.tel = TaskHelper.getm58Tel(task, detailUrl);
+			LogUtil.info("获取到58手机号码:"+house.tel);
 		}
 		if(StringUtils.isEmpty(house.tel)){
 			String tel = getDataBySelector(page , "tel");

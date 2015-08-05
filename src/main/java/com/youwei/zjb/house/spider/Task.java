@@ -99,4 +99,7 @@ public class Task {
 	public String lastError;
 	
 	public Date lasttime;
+	
+	//58网站各个城市站点的拼音,如hf,la
+	public String city58;
 }

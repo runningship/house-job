@@ -337,14 +337,17 @@ public class TaskHelper {
 	}
 
 	public static void main(String[] args) throws IOException{
-		TaskHelper.getm58Tel(null,"http://hf.58.com/ershoufang/21");
+		Task task = new Task();
+		task.cityPy = "hf";
+		TaskHelper.getm58Tel(null,"http://m.58.com/hf/ershoufang/22861761517092x.shtml");
 	}
 	public static String getm58Tel(Task task, String detailUrl){
+		URL url=null;
 		try{
 			String[] arr = detailUrl.split("\\?");
 			arr = arr[0].split("\\/");
 			String houseId = arr[arr.length-1];
-			URL url = new URL("http://m.58.com/hf/ershoufang/"+houseId);
+			url = new URL("http://m.58.com/"+task.city58+"/ershoufang/"+houseId);
 			URLConnection conn = url.openConnection();
 			conn.addRequestProperty("User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
 			conn.setDefaultUseCaches(false);
@@ -352,13 +355,12 @@ public class TaskHelper {
 			conn.setConnectTimeout(10000);
 			conn.setReadTimeout(10000);
 			String result = IOUtils.toString(conn.getInputStream(),"utf8");
-			System.out.println(result);
 			Document page = Jsoup.parse(result);
 			String href= page.getElementById("contact_phone").attr("href");
 			arr = href.split(":");
 			return arr[arr.length-1];
 		}catch(Exception ex){
-			LogUtil.log(Level.WARN, "试图从58手机版获取手机号码失败", ex);
+			LogUtil.log(Level.WARN, "试图从58手机版获取手机号码失败,"+url, ex);
 			return "";
 		}
 	}

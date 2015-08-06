@@ -107,6 +107,9 @@ public class TaskExecutor extends Thread{
 				continue;
 			}
 			String detailUrl = link.first().attr("href");
+			if(detailUrl.contains("?psid=")){
+				detailUrl = detailUrl.split("?psid=")[0];
+			}
 			try {
 				processDetailPage(detailUrl);
 				if(task.interval>0){

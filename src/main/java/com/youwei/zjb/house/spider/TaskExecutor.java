@@ -2,6 +2,8 @@ package com.youwei.zjb.house.spider;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -107,8 +109,12 @@ public class TaskExecutor extends Thread{
 				continue;
 			}
 			String detailUrl = link.first().attr("href");
-			if(detailUrl.contains("?psid=")){
-				detailUrl = detailUrl.split("?psid=")[0];
+			URL url;
+			try {
+				url = new URL(detailUrl);
+				detailUrl = url.toExternalForm().replace("?"+url.getQuery(),"");
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
 			}
 			try {
 				processDetailPage(detailUrl);

@@ -25,8 +25,8 @@ public class TaskScheduler extends Thread{
 				}
 			}
 			try {
-				//每个任务之间间隔1秒
-				Thread.sleep(1000*1);
+				//每个任务之间间隔5秒
+				Thread.sleep(1000*2);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

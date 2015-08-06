@@ -337,9 +337,14 @@ public class TaskHelper {
 	}
 
 	public static void main(String[] args) throws IOException{
-		Task task = new Task();
-		task.cityPy = "hf";
-		TaskHelper.getm58Tel(null,"http://m.58.com/hf/ershoufang/22861761517092x.shtml");
+		URL url = new URL("http://hf.58.com/ershoufang/22812558700554x.shtml");
+		url.toExternalForm().replace("?"+url.getQuery(),"");
+//		for(int i=0;i<100;i++){
+//			Task task = new Task();
+//			task.city58 = "hf";
+//			TaskHelper.getm58Tel(task,"http://hf.58.com/ershoufang/22812558700554x.shtml?psid=172841685188581695347140109&entinfo=22812558700554_0");
+//		}
+		
 	}
 	public static String getm58Tel(Task task, String detailUrl){
 		URL url=null;
@@ -355,9 +360,11 @@ public class TaskHelper {
 			conn.setConnectTimeout(10000);
 			conn.setReadTimeout(10000);
 			String result = IOUtils.toString(conn.getInputStream(),"utf8");
+//			System.out.println(result);
 			Document page = Jsoup.parse(result);
 			String href= page.getElementById("contact_phone").attr("href");
 			arr = href.split(":");
+			System.out.println(arr[arr.length-1]);
 			return arr[arr.length-1];
 		}catch(Exception ex){
 			LogUtil.log(Level.WARN, "试图从58手机版获取手机号码失败,"+url, ex);

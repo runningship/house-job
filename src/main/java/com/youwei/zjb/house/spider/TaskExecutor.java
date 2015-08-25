@@ -109,12 +109,14 @@ public class TaskExecutor extends Thread{
 				continue;
 			}
 			String detailUrl = link.first().attr("href");
-			URL url;
-			try {
-				url = new URL(detailUrl);
-				detailUrl = url.toExternalForm().replace("?"+url.getQuery(),"");
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
+			if(task.site.equals("58")){
+				URL url;
+				try {
+					url = new URL(detailUrl);
+					detailUrl = url.toExternalForm().replace("?"+url.getQuery(),"");
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
 			}
 			try {
 				processDetailPage(detailUrl);
@@ -125,15 +127,17 @@ public class TaskExecutor extends Thread{
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | IOException e) {
 				task.status = KeyConstants.Task_Stop;
 				task.lastError = e.getMessage() + ","+detailUrl;
-				LogUtil.log(Level.WARN, "任务运行失败，请检查程序", e);
+				LogUtil.log(Level.WARN, "单条数据抓取运行失败，请检查程序"+detailUrl, e);
 				continue;
 			} catch(DataInvalidException ex){
 				LogUtil.info(detailUrl+"信息不完整");
 				continue;
 			}catch(Exception ex){
-				//单挑数据失败，继续
-				task.lastError = ex.getMessage()+";"+detailUrl;
-				LogUtil.log(Level.WARN, "抓取数据失败:"+detailUrl, ex);
+				if(!"重复的房源".equals(ex.getMessage())){
+					task.lastError = ex.getMessage()+";"+detailUrl;
+					LogUtil.log(Level.WARN, "抓取数据失败:"+detailUrl, ex);
+				}
+				//单条数据失败，继续
 			}
 		}
 		task.status = KeyConstants.Task_Stop;
@@ -280,17 +284,21 @@ public class TaskExecutor extends Thread{
 
 
 	private void prcessChushou(String detailUrl) throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, DataInvalidException {
+		if(detailUrl.contains("click.ganji.com")){
+			throw new RuntimeException("无效的数据");
+		}
 		House po = dao.getUniqueByKeyValue(House.class, "href", detailUrl);
 		if(po!=null){
-			return;
+			LogUtil.info(task.name+"重复的房源"+detailUrl);
+			throw new RuntimeException("重复的房源");
 		}
 		String pageHtml = PullDataHelper.getHttpData(detailUrl, "", task.encoding);
 		if(pageHtml.contains("页面可能被删除")){
-			return;
+			throw new RuntimeException("页面可能被删除");
 		}
 		if(pageHtml.contains("访问速度太快") || pageHtml.contains("过于频繁")){
 			task.status = KeyConstants.Task_Too_Fast;
-			return;
+			throw new RuntimeException("访问速度太快");
 		}
 		Document page = Jsoup.parse(pageHtml);
 		House house = new House();
@@ -313,7 +321,7 @@ public class TaskExecutor extends Thread{
 		
 		String area = getDataBySelector(page , "area");
 		if(StringUtils.isEmpty(area)){
-			throw new DataInvalidException("");
+			throw new DataInvalidException(detailUrl);
 		}
 		if(area.contains("地址:")){
 			area = area.split(String.valueOf((char)160))[1].replace("-", "");

@@ -168,4 +168,6 @@ public class House {
 	public String site;
 	
 	public String telImg;
+	
+	public Date updatetime;
 }

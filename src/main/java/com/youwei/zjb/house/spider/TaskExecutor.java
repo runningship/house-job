@@ -290,6 +290,8 @@ public class TaskExecutor extends Thread{
 		House po = dao.getUniqueByKeyValue(House.class, "href", detailUrl);
 		if(po!=null){
 			LogUtil.info(task.name+"重复的房源"+detailUrl);
+			po.updatetime = new Date();
+			dao.saveOrUpdate(po);
 			throw new RuntimeException("重复的房源");
 		}
 		String pageHtml = PullDataHelper.getHttpData(detailUrl, "", task.encoding);
@@ -507,8 +509,9 @@ public class TaskExecutor extends Thread{
 	
 	public static void main(String[] args) throws Exception{
 		StartUpListener.initDataSource();
-		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 11);
+		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 129);
 		TaskExecutor te = new TaskExecutor(task);
-		te.processDetailPage("http://bengbu.baixing.com/ershoufang/a768899475.html?index=81");
+		te.run();
+		//te.processDetailPage("http://bengbu.baixing.com/ershoufang/a768899475.html?index=81");
 	}
 }

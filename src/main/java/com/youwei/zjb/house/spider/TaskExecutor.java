@@ -194,7 +194,7 @@ public class TaskExecutor extends Thread{
 		String area = getDataBySelector(page , "area");
 		hr.area = TaskHelper.getAreaFromText(area);
 		if(StringUtils.isEmpty(hr.area)){
-			throw new DataInvalidException("");
+			throw new DataInvalidException("楼盘名称不存在");
 		}
 		String address = getDataBySelector(page , "address");
 		hr.address = address.replace("地址：", "").replace("()", "").replace(String.valueOf((char)160), "").replace("»", "");
@@ -266,16 +266,24 @@ public class TaskExecutor extends Thread{
 		
 		String tel = getDataBySelector(page , "tel");
 		page.select("td:containsOwn(出租租金：)");
-		tel = TaskHelper.getTelFromText(tel);
-		if(tel.contains("http")){
-			hr.telImg = tel;
-		}else if(tel.contains("img")){
-			hr.telImg = task.detailPageUrlPrefix+tel;
-		}else if(tel.contains("image")){
-			hr.telImg = tel;
-		}else{
-			hr.tel = tel.replace(" ", "").replace("移动电话：", "");
+		if("58".equals(hr.site)){
+			System.out.println();
+			hr.tel = TaskHelper.getmRent58Tel(task, detailUrl);
+			LogUtil.info("租房获取到58手机号码:"+hr.tel);
 		}
+		if(StringUtils.isEmpty(hr.tel)){
+			tel = TaskHelper.getTelFromText(tel);
+			if(tel.contains("http")){
+				hr.telImg = tel;
+			}else if(tel.contains("img")){
+				hr.telImg = task.detailPageUrlPrefix+tel;
+			}else if(tel.contains("image")){
+				hr.telImg = tel;
+			}else{
+				hr.tel = tel.replace(" ", "").replace("移动电话：", "");
+			}
+		}
+		
 		String pubtime = getDataBySelector(page , "pubtime");
 		hr.dateadd = TaskHelper.getPubtimeFromText(pubtime);
 		LogUtil.info("抓取到"+task.name+"房源信息:"+BeanUtil.toString(hr));
@@ -509,7 +517,7 @@ public class TaskExecutor extends Thread{
 	
 	public static void main(String[] args) throws Exception{
 		StartUpListener.initDataSource();
-		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 129);
+		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 130);
 		TaskExecutor te = new TaskExecutor(task);
 		te.run();
 		//te.processDetailPage("http://bengbu.baixing.com/ershoufang/a768899475.html?index=81");

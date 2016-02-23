@@ -337,14 +337,21 @@ public class TaskHelper {
 	}
 
 	public static void main(String[] args) throws IOException{
-		URL url = new URL("http://hf.58.com/ershoufang/22812558700554x.shtml");
-		url.toExternalForm().replace("?"+url.getQuery(),"");
+//		URL url = new URL("http://hf.58.com/ershoufang/22812558700554x.shtml");
+//		url.toExternalForm().replace("?"+url.getQuery(),"");
 //		for(int i=0;i<100;i++){
 //			Task task = new Task();
 //			task.city58 = "hf";
 //			TaskHelper.getm58Tel(task,"http://hf.58.com/ershoufang/22812558700554x.shtml?psid=172841685188581695347140109&entinfo=22812558700554_0");
 //		}
-		
+//		Task task = new Task();
+//		task.city58 = "hn";
+//		task.zufang=1;
+//		String tel = getmRent58Tel(task , "24769431983423x.shtml");
+//		System.out.println(tel);
+//		
+		String result = getZxiuFromText("2室 1厅 1卫   68 m²   3/3层 中等装修   朝向南北");
+		System.out.println(result);
 	}
 	public static String getm58Tel(Task task, String detailUrl){
 		URL url=null;
@@ -368,6 +375,31 @@ public class TaskHelper {
 			return arr[arr.length-1];
 		}catch(Exception ex){
 			LogUtil.log(Level.WARN, "试图从58手机版获取手机号码失败,"+url, ex);
+			return "";
+		}
+	}
+	
+	
+	public static String getmRent58Tel(Task task, String detailUrl){
+		URL url=null;
+		try{
+			String[] arr = detailUrl.split("\\?");
+			arr = arr[0].split("\\/");
+			String houseId = arr[arr.length-1];
+			url = new URL("http://m.58.com/"+task.city58+"/zufang/"+houseId);
+			URLConnection conn = url.openConnection();
+			conn.addRequestProperty("User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
+			conn.setDefaultUseCaches(false);
+			conn.setUseCaches(false);
+			conn.setConnectTimeout(10000);
+			conn.setReadTimeout(10000);
+			String result = IOUtils.toString(conn.getInputStream(),"utf8");
+//			System.out.println(result);
+			Document page = Jsoup.parse(result);
+			String text= page.getElementsByClass("meta-phone").text();
+			return text;
+		}catch(Exception ex){
+			LogUtil.log(Level.WARN, "租房试图从58手机版获取手机号码失败,"+url, ex);
 			return "";
 		}
 	}

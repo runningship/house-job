@@ -450,7 +450,7 @@ public class TaskExecutor extends Thread{
 		
 		String beizhu = getDataBySelector(page , "beizhu");
 		house.beizhu = beizhu;
-		
+		house.isdel=0;
 //		house.dateadd = new Date();
 		String pubtime = getDataBySelector(page , "pubtime");
 		house.dateadd = TaskHelper.getPubtimeFromText(pubtime);
@@ -517,7 +517,7 @@ public class TaskExecutor extends Thread{
 	
 	public static void main(String[] args) throws Exception{
 		StartUpListener.initDataSource();
-		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 130);
+		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 131);
 		TaskExecutor te = new TaskExecutor(task);
 		te.run();
 		//te.processDetailPage("http://bengbu.baixing.com/ershoufang/a768899475.html?index=81");

@@ -240,9 +240,11 @@ public class TaskExecutor extends Thread{
 			quyu = getDataBySelector(page , "quyu");
 			quyu = quyu.replace("区域：", "");
 			if(StringUtils.isNotEmpty(quyu)){
-				if(quyu.length()>2){
-					quyu = quyu.replace("区", "");
-					quyu = quyu.replace("县", "");
+				if(!task.cityPy.equals("hefei")){
+					if(quyu.length()>2){
+						quyu = quyu.replace("区", "");
+						quyu = quyu.replace("县", "");
+					}
 				}
 			}
 		}

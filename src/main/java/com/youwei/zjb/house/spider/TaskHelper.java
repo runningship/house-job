@@ -339,17 +339,18 @@ public class TaskHelper {
 	public static void main(String[] args) throws IOException{
 //		URL url = new URL("http://hf.58.com/ershoufang/22812558700554x.shtml");
 //		url.toExternalForm().replace("?"+url.getQuery(),"");
-//		for(int i=0;i<100;i++){
+////		for(int i=0;i<100;i++){
 //			Task task = new Task();
 //			task.city58 = "hf";
 //			TaskHelper.getm58Tel(task,"http://hf.58.com/ershoufang/22812558700554x.shtml?psid=172841685188581695347140109&entinfo=22812558700554_0");
 //		}
-//		Task task = new Task();
-//		task.city58 = "hn";
-//		task.zufang=1;
-//		String tel = getmRent58Tel(task , "24769431983423x.shtml");
-//		System.out.println(tel);
-//		
+		Task task = new Task();
+		task.city58 = "hf";
+		task.zufang=1;
+		String detailUrl ="http://hf.58.com/zufang/27504379064397x.shtml?version=A&psid=138074956193496700966971262&entinfo=27504379064397_0&iuType=z_0&PGTID=0d300008-0034-5b9a-d82a-b2c9e05ed0c7&ClickID=1&adtype=3";
+		String tel = getmRent58Tel(task , detailUrl);
+		System.out.println(tel);
+		
 		String result = getZxiuFromText("2室 1厅 1卫   68 m²   3/3层 中等装修   朝向南北");
 		System.out.println(result);
 	}
@@ -380,14 +381,40 @@ public class TaskHelper {
 	}
 	
 	
+//	public static String getmRent58Tel(Task task, String detailUrl){
+//		URL url=null;
+//		try{
+//			String[] arr = detailUrl.split("\\?");
+//			arr = arr[0].split("\\/");
+//			String houseId = arr[arr.length-1];
+//			url = new URL("http://m.58.com/"+task.city58+"/zufang/"+houseId);
+//			URLConnection conn = url.openConnection();
+//			conn.addRequestProperty("User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
+//			conn.setDefaultUseCaches(false);
+//			conn.setUseCaches(false);
+//			conn.setConnectTimeout(10000);
+//			conn.setReadTimeout(10000);
+//			String result = IOUtils.toString(conn.getInputStream(),"utf8");
+////			System.out.println(result);
+//			Document page = Jsoup.parse(result);
+//			String text= page.getElementsByClass("meta-phone").text();
+//			return text;
+//		}catch(Exception ex){
+//			LogUtil.log(Level.WARN, "租房试图从58手机版获取手机号码失败,"+url, ex);
+//			return "";
+//		}
+//	}
+//	
 	public static String getmRent58Tel(Task task, String detailUrl){
 		URL url=null;
+		URLConnection conn = null;
 		try{
 			String[] arr = detailUrl.split("\\?");
 			arr = arr[0].split("\\/");
 			String houseId = arr[arr.length-1];
 			url = new URL("http://m.58.com/"+task.city58+"/zufang/"+houseId);
-			URLConnection conn = url.openConnection();
+			LogUtil.info("url:"+url);
+			conn = url.openConnection();
 			conn.addRequestProperty("User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
 			conn.setDefaultUseCaches(false);
 			conn.setUseCaches(false);
@@ -397,10 +424,34 @@ public class TaskHelper {
 //			System.out.println(result);
 			Document page = Jsoup.parse(result);
 			String text= page.getElementsByClass("meta-phone").text();
+			
+			if(!StringUtils.isNumeric(text)){
+				String jumpurl = page.getElementsByClass("phoneNumber").attr("data-jumpurl");
+				houseId = houseId.replace("x.shtml", "").replace(".shtml", "").trim();
+				jumpurl="http://app.58.com/api/windex/scandetail/car/"+houseId+"/?pid=799";
+				LogUtil.info("jumpurl:"+jumpurl);
+				
+				url = new URL(jumpurl);
+				conn = url.openConnection();
+				conn.addRequestProperty("User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
+				conn.setDefaultUseCaches(false);
+				conn.setUseCaches(false);
+				conn.setConnectTimeout(10000);
+				conn.setReadTimeout(10000);
+				result = IOUtils.toString(conn.getInputStream(),"utf8");
+				page = Jsoup.parse(result);
+				text=  page.getElementsByClass("tel").attr("data-tel");
+				if(!StringUtils.isBlank(text)){
+					text= text.replace("-", "");
+				}
+			}
 			return text;
 		}catch(Exception ex){
 			LogUtil.log(Level.WARN, "租房试图从58手机版获取手机号码失败,"+url, ex);
 			return "";
 		}
 	}
+	
+	
+	
 }

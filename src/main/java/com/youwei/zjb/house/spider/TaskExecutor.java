@@ -15,6 +15,7 @@ import org.bc.sdak.utils.BeanUtil;
 import org.bc.sdak.utils.LogUtil;
 import org.bc.web.ThreadSession;
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -294,9 +295,17 @@ public class TaskExecutor extends Thread{
 
 
 	private void prcessChushou(String detailUrl) throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, DataInvalidException {
+		if(StringUtil.isBlank(detailUrl)){
+			throw new RuntimeException("无效的数据, detailUrl is null ");
+		}
+		
 		if(detailUrl.contains("click.ganji.com")){
 			throw new RuntimeException("无效的数据");
 		}
+		
+		detailUrl=filterULR(detailUrl);
+		LogUtil.info("抓取到"+task.name+"房源信息， URL:"+detailUrl);
+		
 		House po = dao.getUniqueByKeyValue(House.class, "href", detailUrl);
 		if(po!=null){
 			LogUtil.info(task.name+"重复的房源"+detailUrl);
@@ -517,11 +526,19 @@ public class TaskExecutor extends Thread{
 		return "";
 	}
 	
+	private String filterULR(String detailUrl) throws MalformedURLException{
+		URL url=new URL(detailUrl);
+		 return url.toExternalForm().replace("?"+url.getQuery(),"");
+	}
+	
 	public static void main(String[] args) throws Exception{
-		StartUpListener.initDataSource();
-		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 131);
-		TaskExecutor te = new TaskExecutor(task);
-		te.run();
+//		StartUpListener.initDataSource();
+//		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 131);
+//		TaskExecutor te = new TaskExecutor(task);
+//		te.run();
 		//te.processDetailPage("http://bengbu.baixing.com/ershoufang/a768899475.html?index=81");
+		URL url=new URL("http://wuhu.ganji.com//fang5/2397485328x.htm?jingxuan=INKicKZPP1V6kz_LL6uyeVFm4eEH5-ItIelvGdnQQlEmWMyVaWca3SaXdpxFDRy4a3xtWApubhCQUc6hx4JL6YlrJUb91d6v-Dh66Ig3pOzcTfsimkfr_Q&trackkey=2b89101f0078896ca2d78c47f6d12e08");
+		String detailUrl = url.toExternalForm().replace("?"+url.getQuery(),"");
+		System.out.print(detailUrl);
 	}
 }

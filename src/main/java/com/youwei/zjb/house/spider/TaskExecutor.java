@@ -9,7 +9,6 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.bc.sdak.CommonDaoService;
-import org.bc.sdak.SimpDaoTool;
 import org.bc.sdak.TransactionalServiceHelper;
 import org.bc.sdak.utils.BeanUtil;
 import org.bc.sdak.utils.LogUtil;
@@ -88,9 +87,9 @@ public class TaskExecutor extends Thread{
 		}
 //		if(pageHtml==null){
 //			task.status = KeyConstants.Task_Failed;
-//			task.lastError = "列表页面数据获取失败";
+//			task.lastError = "列表页面数据获取失败"; 
 //			return;
-//		}
+//		}                   
 		Document page = Jsoup.parse(pageHtml);
 		Elements dataList = page.select(task.listSelector);
 //		System.out.println(pageHtml);
@@ -465,12 +464,18 @@ public class TaskExecutor extends Thread{
 //		house.dateadd = new Date();
 		String pubtime = getDataBySelector(page , "pubtime");
 		house.dateadd = TaskHelper.getPubtimeFromText(pubtime);
+		//清洗房源
+		if(cleanse(house)){
+		  return;  
+		}
+		
 		LogUtil.info("抓取到"+task.name+"房源信息:"+BeanUtil.toString(house));
+		
+		
 		dao.saveOrUpdate(house);
 	}
 
-
-	private String getDataBySelector(Document page ,String selectorField) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+    private String getDataBySelector(Document page ,String selectorField) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
 		Field field = Task.class.getField(selectorField);
 		String selectors = (String)field.get(task);
 		if(StringUtils.isEmpty(selectors)){
@@ -531,14 +536,41 @@ public class TaskExecutor extends Thread{
 		 return url.toExternalForm().replace("?"+url.getQuery(),"");
 	}
 	
+    /**
+     * @param house
+     * 
+     * @return false : not cleansed; true : cleansed
+     * 
+     */
+    public boolean cleanse(House house) {
+      if(house == null){
+          return false;
+      }
+      
+      //清洗蚁族房源
+      String filterCondition = "房蚁安徽站";
+      if(!StringUtils.isBlank(house.beizhu) && house.beizhu.contains(filterCondition)){
+          LogUtil.info("清洗"+task.name+"蚁族房源信息:"+BeanUtil.toString(house));
+          return true;
+      }
+      return false;
+    }
+
+	
 	public static void main(String[] args) throws Exception{
 //		StartUpListener.initDataSource();
 //		Task task  =  SimpDaoTool.getGlobalCommonDaoService().get(Task.class, 131);
-//		TaskExecutor te = new TaskExecutor(task);
+	    Task task = new Task();
+		TaskExecutor te = new TaskExecutor(task);
 //		te.run();
-		//te.processDetailPage("http://bengbu.baixing.com/ershoufang/a768899475.html?index=81");
-		URL url=new URL("http://wuhu.ganji.com//fang5/2397485328x.htm?jingxuan=INKicKZPP1V6kz_LL6uyeVFm4eEH5-ItIelvGdnQQlEmWMyVaWca3SaXdpxFDRy4a3xtWApubhCQUc6hx4JL6YlrJUb91d6v-Dh66Ig3pOzcTfsimkfr_Q&trackkey=2b89101f0078896ca2d78c47f6d12e08");
-		String detailUrl = url.toExternalForm().replace("?"+url.getQuery(),"");
-		System.out.print(detailUrl);
+//		//te.processDetailPage("http://bengbu.baixing.com/ershoufang/a768899475.html?index=81");
+//		URL url=new URL("http://wuhu.ganji.com//fang5/2397485328x.htm?jingxuan=INKicKZPP1V6kz_LL6uyeVFm4eEH5-ItIelvGdnQQlEmWMyVaWca3SaXdpxFDRy4a3xtWApubhCQUc6hx4JL6YlrJUb91d6v-Dh66Ig3pOzcTfsimkfr_Q&trackkey=2b89101f0078896ca2d78c47f6d12e08");
+//		String detailUrl = url.toExternalForm().replace("?"+url.getQuery(),"");
+//		System.out.print(detailUrl);
+	    
+	    House house = new House();
+	    house.beizhu ="你还在为收集个人房源而守在电脑前刷屏吗？ 你还在为手慢而抢录不到新房源捶胸顿足吗？ 你还在纳闷小伙伴录新房源老是比自己快吗？ 不是你手慢，而是别人开挂！ 关注【房蚁安徽站】公众号,体验开挂抢房的乐趣";
+	    
+	    System.out.println(te.cleanse(house));
 	}
 }

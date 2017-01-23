@@ -97,6 +97,18 @@ public class TaskHelper {
 				return 0;
 			}
 		}
+		
+	   match = Pattern.compile("[0-9]*层").matcher(text);
+	   if(match.find()){
+           String tmp = match.group();
+           tmp = tmp.replace("层", "");
+           try{
+               return Integer.valueOf(tmp);
+           }catch(Exception ex){
+               //暂不处理
+               return 0;
+           }
+       }	
 		text = text.replace("楼层：", "").replace("总高", "").replace("楼", "").replace("层", "").trim().replace(" ", "/").replace("，", "/");
 		if(StringUtils.isEmpty(text)){
 			return 0;
@@ -158,6 +170,7 @@ public class TaskHelper {
 		if(StringUtils.isEmpty(text)){
 			return 0f;
 		}
+		
 		String tmp = "";
 		text = text.replace(" ㎡", "㎡").replace(" m²", "㎡").replace(String.valueOf((char)160),"");
 		text  = text.replace("　", " ").replace("面积：", "").replace("平米", "㎡");
@@ -371,32 +384,62 @@ public class TaskHelper {
 //		String result = getZxiuFromText("2室 1厅 1卫   68 m²   3/3层 中等装修   朝向南北");
 //		System.out.println(result);
 	}
-	public static String getm58Tel(Task task, String detailUrl){
-		URL url=null;
-		try{
-			String[] arr = detailUrl.split("\\?");
-			arr = arr[0].split("\\/");
-			String houseId = arr[arr.length-1];
-			url = new URL("http://m.58.com/"+task.city58+"/ershoufang/"+houseId);
-			URLConnection conn = url.openConnection();
-			conn.addRequestProperty("User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
-			conn.setDefaultUseCaches(false);
-			conn.setUseCaches(false);
-			conn.setConnectTimeout(10000);
-			conn.setReadTimeout(10000);
-			String result = IOUtils.toString(conn.getInputStream(),"utf8");
-//			System.out.println(result);
-			Document page = Jsoup.parse(result);
-			String href= page.getElementById("contact_phone").attr("href");
-			arr = href.split(":");
-			System.out.println(arr[arr.length-1]);
-			return arr[arr.length-1];
-		}catch(Exception ex){
-			LogUtil.log(Level.WARN, "试图从58手机版获取手机号码失败,"+url, ex);
-			return "";
-		}
-	}
 	
+	public static String getm58Tel(Task task, String detailUrl){
+        URL url=null;
+        try{
+            String[] arr = detailUrl.split("\\?");
+            arr = arr[0].split("\\/");
+            String houseId = arr[arr.length-1];
+            String wapUrl="http://wap.58.com/"+task.city58+"/ershoufang/"+houseId+"?device=wap";
+            url = new URL(wapUrl);
+            URLConnection conn = url.openConnection();
+            conn.addRequestProperty("User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
+            conn.setDefaultUseCaches(false);
+            conn.setUseCaches(false);
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
+            String result = IOUtils.toString(conn.getInputStream(),"utf8");
+//          System.out.println(result);
+            Document page = Jsoup.parse(result);
+            String tel=page.select("div+font[color=red]").first().html();
+            if(StringUtils.isNotBlank(tel)){
+                tel=tel.replaceAll("\\s+", "");
+            }
+            System.out.println("tel:"+tel);
+            return tel;
+        }catch(Exception ex){
+            LogUtil.log(Level.WARN, "试图从58手机版获取手机号码失败,"+url, ex);
+            return "";
+        }
+    }
+	
+//	public static String getm58Tel(Task task, String detailUrl){
+//		URL url=null;
+//		try{
+//			String[] arr = detailUrl.split("\\?");
+//			arr = arr[0].split("\\/");
+//			String houseId = arr[arr.length-1];
+//			url = new URL("http://m.58.com/"+task.city58+"/ershoufang/"+houseId);
+//			URLConnection conn = url.openConnection();
+//			conn.addRequestProperty("User-agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
+//			conn.setDefaultUseCaches(false);
+//			conn.setUseCaches(false);
+//			conn.setConnectTimeout(10000);
+//			conn.setReadTimeout(10000);
+//			String result = IOUtils.toString(conn.getInputStream(),"utf8");
+////			System.out.println(result);
+//			Document page = Jsoup.parse(result);
+//			String href= page.getElementById("contact_phone").attr("href");
+//			arr = href.split(":");
+//			System.out.println(arr[arr.length-1]);
+//			return arr[arr.length-1];
+//		}catch(Exception ex){
+//			LogUtil.log(Level.WARN, "试图从58手机版获取手机号码失败,"+url, ex);
+//			return "";
+//		}
+//	}
+//	
 	
 //	public static String getmRent58Tel(Task task, String detailUrl){
 //		URL url=null;

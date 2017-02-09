@@ -44,7 +44,7 @@ public class StartUpListener{
 				settings.put(AvailableSettings.USE_SECOND_LEVEL_CACHE, "true");
 				
 //				settings.put(AvailableSettings.PROXOOL_XML, "proxool.xml");//相对目录为classes
-				settings.put(AvailableSettings.PROXOOL_XML,"file:\\D:\\conf\\"+getCityPinyin()+"_proxool.xml");//相对目录为classes
+				settings.put(AvailableSettings.PROXOOL_XML,"file:\\C:\\conf\\"+getCityPinyin()+"_proxool.xml");//相对目录为classes
 				settings.put(AvailableSettings.PROXOOL_EXISTING_POOL, "false");
 				settings.put(AvailableSettings.PROXOOL_POOL_ALIAS, getCityPinyin());
 				

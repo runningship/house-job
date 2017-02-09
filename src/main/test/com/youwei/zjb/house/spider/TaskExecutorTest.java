@@ -84,6 +84,7 @@ public class TaskExecutorTest {
         Task task = new Task();
         task.id = 1;
         task.siteUrl="http://wuhu.58.com/ershoufang/0/";
+//        task.siteUrl="http://hf.58.com/feixi/ershoufang/0/";
         task.name="芜湖-58-二手房";
         task.cityPy="wuhu";
         task.site="58";
@@ -96,6 +97,7 @@ public class TaskExecutorTest {
         task.listSelector=".tbimg tr";
         task.detailLink=".bthead a";
 //        task.area="span:containsOwn(小区：)+div;span:contains(小区：)+div a[onclick*=xiaoqu]";
+//        task.area="p:containsOwn(小区名称) :first-child;li:contains(位置);.bigtitle h1";
         task.area="p:containsOwn(小区名称) :first-child;li:contains(位置);.bigtitle h1";
         task.quyu="li:contains(位置) :nth-child(2);li:contains(位置) :nth-child(3)";
         task.lceng="li:containsOwn(楼层) + li";//楼层
@@ -178,8 +180,9 @@ public class TaskExecutorTest {
     public  void getm58Tel(){
         URL url=null;
         Task task = new Task();
-        task.city58="wuhu";
-        String detailUrl="http://wuhu.58.com/ershoufang/28816042371651x.shtml";
+        task.city58="hf";
+//        String detailUrl="http://hf.58.com/ershoufang/28977143688392x.shtml";
+        String detailUrl="http://hf.58.com/ershoufang/28983635278137x.shtml";
         try{
             String[] arr = detailUrl.split("\\?");
             arr = arr[0].split("\\/");

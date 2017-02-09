@@ -405,6 +405,8 @@ public class TaskHelper {
             String tel=page.select("div+font[color=red]").first().html();
             if(StringUtils.isNotBlank(tel)){
                 tel=tel.replaceAll("\\s+", "");
+            }else{
+                System.out.println("tel:"+tel);
             }
             System.out.println("tel:"+tel);
             return tel;

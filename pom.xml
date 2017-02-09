@@ -75,6 +75,65 @@
 		</dependency>
 	</dependencies>
 	
+	<build>
+	    <resources>
+	        <resource>
+	            <directory>src/main/java</directory>
+	            <filtering>true</filtering>
+	        </resource>
+	        <resource>
+	            <directory>src/main/resources</directory>
+	            <filtering>true</filtering>
+	            <includes>
+	                <include>**/*.xml</include>
+	                <include>**/*.properties</include>
+	                <include>**/*.cfg</include>
+	            </includes>
+	            <!-- <excludes>
+	                <exclude>**/*.xml</exclude>
+	            </excludes> -->
+	        </resource>
+	    </resources>
+	    <plugins>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-jar-plugin</artifactId>
+	            <configuration>
+	                <excludes><!--不把配置文件打的jar包里面-->
+	                    <exclude>**/*.xml</exclude>
+	                    <exclude>**/*.properties</exclude>
+	                </excludes>
+	            </configuration>
+	            <executions>
+	                <execution>
+	                    <id>make-assembly</id>
+	                    <phase>package</phase>
+	                    <goals>
+	                        <goal>jar</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>
+	        <plugin>
+	            <artifactId>maven-assembly-plugin</artifactId>
+	            <configuration>
+	                <descriptors>
+	                    <descriptor>src/main/assembly/src.xml</descriptor><!--对应着打包配置-->
+	                </descriptors>
+	            </configuration>
+	            <executions>
+	                <execution>
+	                    <id>make-assembly</id>
+	                    <phase>package</phase>
+	                    <goals>
+	                        <goal>single</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>
+	    </plugins>
+	</build>
+	
 	<repositories>
 		<repository>
 			<id>central</id>

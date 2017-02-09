@@ -85,11 +85,11 @@ public class TaskExecutor extends Thread{
 			task.lastError = "任务未设置城市";
 			return;
 		}
-//		if(pageHtml==null){
-//			task.status = KeyConstants.Task_Failed;
-//			task.lastError = "列表页面数据获取失败"; 
-//			return;
-//		}                   
+		if(pageHtml==null){
+			task.status = KeyConstants.Task_Failed;
+			task.lastError = "列表页面数据获取失败"; 
+			return;
+		}                   
 		Document page = Jsoup.parse(pageHtml);
 		Elements dataList = page.select(task.listSelector);
 //		System.out.println(pageHtml);
@@ -211,7 +211,7 @@ public class TaskExecutor extends Thread{
 		String fangshi = getDataBySelector(page , "fangshi");
 		hr.fangshi = TaskHelper.getFangshiText(fangshi);
 		String lxr = getDataBySelector(page , "lxr");
-		hr.lxr = lxr.replace("个人", "").replace("姓名： ", "");
+		hr.lxr = lxr.replace("个人", "").replace("个人", "").replace("姓名： ", "");
 		String lceng = getDataBySelector(page , "lceng");
 		hr.lceng = TaskHelper.getLcengFromText(lceng);
 		
